@@ -7,6 +7,6 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
-COPY --from=build /app/target/*-jar-with-dependencies.jar app.jar
+COPY --from=build /app/target/jdbc-backend-proyecto-1.0-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

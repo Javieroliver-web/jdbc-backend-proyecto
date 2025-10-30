@@ -22,8 +22,26 @@ services:
     networks:
       - backend
 
+  # --- INICIO DE LO NUEVO ---
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin-jpa
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@proyecto.com"  # Email para iniciar sesión
+      PGADMIN_DEFAULT_PASSWORD: "adminpass"      # CAMBIA ESTA CONTRASEÑA
+    ports:
+      - "5050:80"  # Accede en: http://localhost:5050
+    networks:
+      - backend    # Clave: se conecta a la misma red que la BD
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db         # Se asegura de iniciarse después de la BD
+  # --- FIN DE LO NUEVO ---
+
 networks:
   backend:
 
 volumes:
   pgdata:
+  pgadmin-data:  # <-- Añade esta línea
