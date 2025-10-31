@@ -21,6 +21,8 @@ services:
       - db
     networks:
       - backend
+    ports:
+      - "8080:8080"  # <-- ¡AÑADE ESTA LÍNEA!
 
   # --- INICIO DE LO NUEVO ---
   pgadmin:
@@ -44,4 +46,4 @@ networks:
 
 volumes:
   pgdata:
-  pgadmin-data:  # <-- Añade esta línea
+  pgadmin-data:

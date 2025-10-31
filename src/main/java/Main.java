@@ -1,42 +1,66 @@
-import jakarta.persistence.EntityManagerFactory; // <-- IMPORT NUEVO
-import jakarta.persistence.Persistence;        // <-- IMPORT NUEVO
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.glassfish.jersey.server.ResourceConfig; // <-- NUEVO IMPORT
+import org.glassfish.jersey.internal.inject.AbstractBinder; // <-- NUEVO IMPORT
+import org.glassfish.jersey.media.json.jackson.JacksonFeature; // <-- NUEVO IMPORT (para JSON)
 
 public class Main {
-    public static void main(String[] args) throws Exception {
 
-        // --- INICIO DE LO NUEVO ---
-        // Forzamos la inicialización de JPA (Hibernate)
-        // Esto leerá tu persistence.xml y creará las tablas
+    public static void main(String[] args) {
+
+        // --- PASO 1: INICIALIZAR JPA ---
         System.out.println("Inicializando conexión con la base de datos (JPA)...");
-        EntityManagerFactory emf;
+        final EntityManagerFactory emf; // <-- La hacemos 'final' para pasarla
         try {
-            // "miUnidadDePersistencia" debe coincidir con el nombre en tu persistence.xml
             emf = Persistence.createEntityManagerFactory("miUnidadDePersistencia");
             System.out.println("¡Conexión a la base de datos (JPA) inicializada!");
-
-            // NOTA: Más adelante, necesitarás pasar este 'emf' a tus DAOs 
-            // para que puedan hacer consultas. Por ahora, solo con crearlo
-            // forzaremos la creación de las tablas.
-
         } catch (Exception e) {
             System.out.println("¡¡ERROR FATAL!! No se pudo inicializar JPA.");
             e.printStackTrace();
-            return; // Detenemos la aplicación si la BD falla
+            return;
         }
-        // --- FIN DE LO NUEVO ---
 
+        // --- PASO 2: CONFIGURAR JERSEY (LA API) ---
 
+        // Creamos la configuración de Jersey
+        ResourceConfig config = new ResourceConfig();
+        // Le decimos que escanee el paquete 'controller'
+        config.packages("controller");
+        // Le decimos que use "Jackson" para convertir objetos Java a JSON
+        config.register(JacksonFeature.class);
+
+        // Le enseñamos a Jersey cómo "inyectar" el EMF
+        config.register(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bind(emf).to(EntityManagerFactory.class);
+            }
+        });
+
+        // --- PASO 3: INICIAR EL SERVIDOR WEB (JETTY) ---
         System.out.println("Iniciando servidor de la API...");
+        try {
+            Server server = new Server(8080);
+            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.setContextPath("/");
+            server.setHandler(context);
 
-        // 1. Crear el Servidor
-        // (El resto de tu código de Jetty sigue igual)
-        Server server = new Server(8080);
-        // ... (etc)
+            // Le pasamos la configuración de Jersey (en vez de los paquetes)
+            ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(config));
+            context.addServlet(jerseyServlet, "/api/*");
+            jerseyServlet.setInitOrder(0);
 
-        // ... (el resto de tu método main)
+            server.start();
+            System.out.println("¡Servidor iniciado! Escuchando en http://localhost:8080");
+            server.join();
+
+        } catch (Exception e) {
+            System.out.println("Error al iniciar el servidor Jetty.");
+            e.printStackTrace();
+        }
     }
 }
