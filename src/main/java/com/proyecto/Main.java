@@ -1,3 +1,4 @@
+package com.proyecto;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.eclipse.jetty.server.Server;

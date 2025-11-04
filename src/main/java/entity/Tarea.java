@@ -1,5 +1,6 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore; // <-- IMPORTA ESTO
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -24,35 +25,34 @@ public class Tarea {
     @Column(name = "fecha_limite")
     private LocalDateTime fechaLimite;
 
-    // --- Relaciones ---
+    // --- Relaciones (con @JsonIgnore) ---
 
-    // Relación: Muchas tareas pertenecen a UN proyecto.
+    @JsonIgnore // <-- AÑADE ESTO
     @ManyToOne
     @JoinColumn(name = "proyecto_id", nullable = false)
     private Proyecto proyecto;
 
-    // Relación: Muchos usuarios están asignados a Muchas tareas.
+    @JsonIgnore // <-- AÑADE ESTO
     @ManyToMany
     @JoinTable(
-        name = "tarea_asignada", // Tabla intermedia
+        name = "tarea_asignada", 
         joinColumns = @JoinColumn(name = "tarea_id"),
         inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
     private Set<Usuario> usuariosAsignados;
 
-    // Relación: Muchos usuarios marcan como favoritas Muchas tareas.
+    @JsonIgnore // <-- AÑADE ESTO
     @ManyToMany
     @JoinTable(
-        name = "tarea_favorita", // Tabla intermedia
+        name = "tarea_favorita", 
         joinColumns = @JoinColumn(name = "tarea_id"),
         inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
     private Set<Usuario> usuariosQueDieronFavorito;
 
     // --- Constructores, Getters y Setters ---
-
     public Tarea() {
     }
 
-    // ... Genera todos los Getters y Setters para todos los campos ...
+    // ... (Todos tus Getters y Setters) ...
 }

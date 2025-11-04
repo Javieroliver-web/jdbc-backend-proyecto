@@ -1,5 +1,6 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore; // <-- IMPORTA ESTO
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -21,17 +22,16 @@ public class Notificacion {
 
     private LocalDateTime fecha;
 
-    // --- Relaciones ---
+    // --- Relaciones (con @JsonIgnore) ---
 
-    // Relación: Muchas notificaciones pertenecen a UN usuario.
+    @JsonIgnore // <-- AÑADE ESTO
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     // --- Constructores, Getters y Setters ---
-
     public Notificacion() {
     }
 
-    // ... Genera todos los Getters y Setters para todos los campos ...
+    // ... (Todos tus Getters y Setters) ...
 }

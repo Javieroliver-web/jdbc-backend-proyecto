@@ -1,5 +1,6 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore; // <-- IMPORTA ESTO
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
@@ -27,34 +28,30 @@ public class Proyecto {
     @Column(length = 50)
     private String estado;
 
-    // --- Relaciones ---
+    // --- Relaciones (con @JsonIgnore) ---
 
-    // Relación: Muchos proyectos pueden ser creados por UN usuario.
+    @JsonIgnore // <-- AÑADE ESTO
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false) // Esta es la FK
+    @JoinColumn(name = "usuario_id", nullable = false) 
     private Usuario creador;
 
-    // Relación: Un proyecto tiene MUCHAS tareas.
-    // "mappedBy" le dice a Hibernate que la clave foránea está en la clase Tarea (en el campo "proyecto")
+    @JsonIgnore // <-- AÑADE ESTO
     @OneToMany(mappedBy = "proyecto")
     private Set<Tarea> tareas;
 
-    // Relación: Muchos usuarios son miembros de Muchos proyectos.
+    @JsonIgnore // <-- AÑADE ESTO
     @ManyToMany
     @JoinTable(
-        name = "usuario_proyecto", // Nombre de la tabla intermedia
-        joinColumns = @JoinColumn(name = "proyecto_id"), // Columna de esta entidad
-        inverseJoinColumns = @JoinColumn(name = "usuario_id") // Columna de la otra entidad
+        name = "usuario_proyecto", 
+        joinColumns = @JoinColumn(name = "proyecto_id"), 
+        inverseJoinColumns = @JoinColumn(name = "usuario_id") 
     )
     private Set<Usuario> miembros;
 
     // --- Constructores, Getters y Setters ---
-
+    // (Asegúrate de tenerlos todos)
     public Proyecto() {
     }
-
-    // (Omito los Getters y Setters por brevedad, pero debes generarlos
-    // igual que hiciste en la clase Usuario)
     
-    // ... Genera todos los Getters y Setters para todos los campos...
+    // ... (Todos tus Getters y Setters) ...
 }

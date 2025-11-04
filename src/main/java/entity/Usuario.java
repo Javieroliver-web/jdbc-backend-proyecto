@@ -1,12 +1,11 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore; // <-- IMPORTA ESTO
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Set; // ¡Importante añadir Set!
+import java.util.Set; 
 
-// @Entity le dice a Hibernate: "Esta clase representa una tabla en la BD"
 @Entity
-// @Table le dice a Hibernate el nombre exacto de la tabla
 @Table(name = "usuario")
 public class Usuario {
 
@@ -35,25 +34,25 @@ public class Usuario {
     @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;
 
-    // --- NUEVAS RELACIONES (Añadidas) ---
+    // --- RELACIONES CON @JsonIgnore ---
 
-    // Un usuario puede crear MUCHOS proyectos
+    @JsonIgnore // <-- AÑADE ESTO
     @OneToMany(mappedBy = "creador")
     private Set<Proyecto> proyectosCreados;
 
-    // Un usuario puede ser miembro de MUCHOS proyectos
+    @JsonIgnore // <-- AÑADE ESTO
     @ManyToMany(mappedBy = "miembros")
     private Set<Proyecto> proyectosDondeEsMiembro;
 
-    // Un usuario puede tener MUCHAS tareas asignadas
+    @JsonIgnore // <-- AÑADE ESTO
     @ManyToMany(mappedBy = "usuariosAsignados")
     private Set<Tarea> tareasAsignadas;
 
-    // Un usuario puede tener MUCHAS tareas favoritas
+    @JsonIgnore // <-- AÑADE ESTO
     @ManyToMany(mappedBy = "usuariosQueDieronFavorito")
     private Set<Tarea> tareasFavoritas;
 
-    // Un usuario puede tener MUCHAS notificaciones
+    @JsonIgnore // <-- AÑADE ESTO
     @OneToMany(mappedBy = "usuario")
     private Set<Notificacion> notificaciones;
 
