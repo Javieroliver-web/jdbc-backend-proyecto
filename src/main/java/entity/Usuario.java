@@ -1,74 +1,78 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore; // <-- IMPORTA ESTO
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Set; 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.*; // Importante: usa jakarta.persistence
 
 @Entity
-@Table(name = "usuario")
+@Table(name = "Usuario")
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
-    @Column(name = "nombre", length = 100)
     private String nombre;
-
-    @Column(name = "apellido", length = 100)
     private String apellido;
-
-    @Column(name = "email", unique = true, length = 255)
     private String email;
-
-    @Column(name = "password", length = 255)
     private String password;
-
-    @Column(name = "rol", length = 50)
     private String rol;
-
-    @Column(name = "avatar", length = 255)
     private String avatar;
 
-    @Column(name = "fecha_registro")
-    private LocalDateTime fechaRegistro;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fecha_registro", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Date fecha_registro;
 
-    // --- RELACIONES CON @JsonIgnore ---
+    // --- Relaciones ---
+    // (Estas son las relaciones de tu diagrama. Las añadiremos ahora
+    // para que no sean el siguiente error)
 
-    @JsonIgnore // <-- AÑADE ESTO
-    @OneToMany(mappedBy = "creador")
-    private Set<Proyecto> proyectosCreados;
+    // Un usuario es "creador" de muchos proyectos
+    @OneToMany(mappedBy = "creador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Proyecto> proyectosCreados = new HashSet<>();
 
-    @JsonIgnore // <-- AÑADE ESTO
-    @ManyToMany(mappedBy = "miembros")
-    private Set<Proyecto> proyectosDondeEsMiembro;
+    // Un usuario recibe muchas notificaciones
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Notificacion> notificaciones = new HashSet<>();
 
-    @JsonIgnore // <-- AÑADE ESTO
-    @ManyToMany(mappedBy = "usuariosAsignados")
-    private Set<Tarea> tareasAsignadas;
+    // Un usuario participa en muchos proyectos (tabla intermedia Usuario_Proyecto)
+    @ManyToMany
+    @JoinTable(
+        name = "Usuario_Proyecto",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "proyecto_id")
+    )
+    private Set<Proyecto> proyectosAsignados = new HashSet<>();
 
-    @JsonIgnore // <-- AÑADE ESTO
-    @ManyToMany(mappedBy = "usuariosQueDieronFavorito")
-    private Set<Tarea> tareasFavoritas;
+    // Un usuario tiene muchas tareas asignadas
+    @ManyToMany
+    @JoinTable(
+        name = "Tarea_Asignada",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "tarea_id")
+    )
+    private Set<Tarea> tareasAsignadas = new HashSet<>();
 
-    @JsonIgnore // <-- AÑADE ESTO
-    @OneToMany(mappedBy = "usuario")
-    private Set<Notificacion> notificaciones;
+    // Un usuario tiene muchas tareas favoritas
+    @ManyToMany
+    @JoinTable(
+        name = "Tarea_Favorita",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "tarea_id")
+    )
+    private Set<Tarea> tareasFavoritas = new HashSet<>();
 
-    // --- Constructores ---
-    public Usuario() {
-    }
 
     // --- Getters y Setters ---
-    // (Asegúrate de tenerlos para TODOS los campos, 
-    // incluidos los nuevos Set<...>)
+    // (En VS Code: Clic derecho > Source Action > Generate Getters and Setters)
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -79,11 +83,55 @@ public class Usuario {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    
-    // ... (El resto de Getters y Setters que ya tenías) ...
-    
-    // ... Y también genera Getters/Setters para las nuevas relaciones ...
-    
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Date getFecha_registro() {
+        return fecha_registro;
+    }
+
+    public void setFecha_registro(Date fecha_registro) {
+        this.fecha_registro = fecha_registro;
+    }
+
     public Set<Proyecto> getProyectosCreados() {
         return proyectosCreados;
     }
@@ -92,13 +140,35 @@ public class Usuario {
         this.proyectosCreados = proyectosCreados;
     }
 
-    public Set<Proyecto> getProyectosDondeEsMiembro() {
-        return proyectosDondeEsMiembro;
+    public Set<Notificacion> getNotificaciones() {
+        return notificaciones;
     }
 
-    public void setProyectosDondeEsMiembro(Set<Proyecto> proyectosDondeEsMiembro) {
-        this.proyectosDondeEsMiembro = proyectosDondeEsMiembro;
+    public void setNotificaciones(Set<Notificacion> notificaciones) {
+        this.notificaciones = notificaciones;
     }
 
-    // ... (etc. para tareasAsignadas, tareasFavoritas, notificaciones) ...
+    public Set<Proyecto> getProyectosAsignados() {
+        return proyectosAsignados;
+    }
+
+    public void setProyectosAsignados(Set<Proyecto> proyectosAsignados) {
+        this.proyectosAsignados = proyectosAsignados;
+    }
+
+    public Set<Tarea> getTareasAsignadas() {
+        return tareasAsignadas;
+    }
+
+    public void setTareasAsignadas(Set<Tarea> tareasAsignadas) {
+        this.tareasAsignadas = tareasAsignadas;
+    }
+
+    public Set<Tarea> getTareasFavoritas() {
+        return tareasFavoritas;
+    }
+
+    public void setTareasFavoritas(Set<Tarea> tareasFavoritas) {
+        this.tareasFavoritas = tareasFavoritas;
+    }
 }

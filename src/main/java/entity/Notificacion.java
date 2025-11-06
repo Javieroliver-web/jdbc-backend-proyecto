@@ -1,37 +1,81 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore; // <-- IMPORTA ESTO
+import java.util.Date;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "notificacion")
+@Table(name = "Notificacion")
 public class Notificacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    private int id;
+    
     @Column(columnDefinition = "TEXT")
     private String mensaje;
-
-    @Column(length = 50)
+    
     private String tipo;
+    private boolean leida; // Los errores de "not used" son solo avisos, desaparecerán
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Date fecha;
 
-    private boolean leida;
-
-    private LocalDateTime fecha;
-
-    // --- Relaciones (con @JsonIgnore) ---
-
-    @JsonIgnore // <-- AÑADE ESTO
-    @ManyToOne
+    // --- Relaciones ---
+    
+    // Muchas notificaciones pertenecen a UN usuario
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    // --- Constructores, Getters y Setters ---
-    public Notificacion() {
+    // --- Getters y Setters ---
+    // ¡Genéralos!
+
+    public int getId() {
+        return id;
     }
 
-    // ... (Todos tus Getters y Setters) ...
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public boolean isLeida() {
+        return leida;
+    }
+
+    public void setLeida(boolean leida) {
+        this.leida = leida;
+    }
+
+    public Date getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 }

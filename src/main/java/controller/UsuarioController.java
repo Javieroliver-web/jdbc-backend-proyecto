@@ -1,33 +1,47 @@
-package controller;
+package controller; // El paquete es 'controller', no 'controller.java'
 
-import dao.UsuarioDAO; // <-- IMPORTA TU DAO
-import entity.Usuario; // <-- IMPORTA TU ENTIDAD
-import jakarta.inject.Inject; // <-- IMPORT para Inyección
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import dto.UsuarioDTO;
+import dto.UsuarioCreateDTO;
+import services.UsuarioService; // Corregido a 'services' (plural)
+import java.util.List;
+
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-
-import java.util.List; // <-- IMPORT para Listas
+import jakarta.ws.rs.core.Response;
 
 @Path("/usuarios")
 public class UsuarioController {
 
-    private final EntityManagerFactory emf;
-    private final UsuarioDAO usuarioDAO;
-
-    // 1. Jersey "inyectará" el EMF que registramos en Main.java
-    @Inject
-    public UsuarioController(EntityManagerFactory emf) {
-        this.emf = emf;
-        this.usuarioDAO = new UsuarioDAO(emf); // Creamos el DAO
-    }
+    // Asegúrate de que tu clase UsuarioService esté en el paquete 'services'
+    private UsuarioService usuarioService = new UsuarioService(); 
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Usuario> getUsuarios() {
-        // 2. Usamos el DAO para buscar todos los usuarios
-        return usuarioDAO.findAll();
+    public Response getTodosLosUsuarios() {
+        List<UsuarioDTO> usuarios = usuarioService.getTodosLosUsuarios();
+        return Response.ok(usuarios).build();
     }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUsuarioPorId(@PathParam("id") int id) {
+        UsuarioDTO dto = usuarioService.getUsuarioPorId(id);
+        if (dto != null) {
+            return Response.ok(dto).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response crearUsuario(UsuarioCreateDTO createDTO) {
+        // Asumiendo que tu servicio devuelve el DTO del usuario creado
+        UsuarioDTO nuevoUsuario = usuarioService.crearUsuario(createDTO);
+        return Response.status(Response.Status.CREATED).entity(nuevoUsuario).build();
+    }
+
+    // ... Aquí irían tus métodos PUT y DELETE ...
 }
