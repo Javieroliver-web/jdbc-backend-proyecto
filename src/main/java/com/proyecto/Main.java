@@ -7,32 +7,68 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 public class Main {
     public static void main(String[] args) {
-        Server server = new Server(8080); // Inicia el servidor en el puerto 8080
+        Server server = new Server(8080);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
 
-        // Configura el Servlet de Jersey
-        // Esto le dice a Jersey que maneje todas las peticiones bajo /api/*
+        // Configurar el Servlet de Jersey
         ServletHolder holder = context.addServlet(ServletContainer.class, "/api/*");
         holder.setInitOrder(1);
 
-        // --- ESTA ES LA SOLUCIÓN A TU ERROR ---
-        // 1. Le decimos a Jersey que escanee el paquete 'controller' para encontrar tus Endpoints
+        // Escanear el paquete 'controller' para encontrar todos los endpoints
         holder.setInitParameter("jersey.config.server.provider.packages", "controller");
         
-        // 2. Le decimos a Jersey que use GSON para manejar JSON
-        // (En lugar de 'JsonFeature' de Jackson, usamos 'GsonFeature' de Gson)
+        // Usar GSON para manejar JSON
         holder.setInitParameter("jersey.config.server.provider.classnames", 
             "org.glassfish.jersey.media.json.gson.GsonFeature");
 
         try {
             server.start();
-            System.out.println("Servidor iniciado en http://localhost:8080/api");
+            System.out.println("╔════════════════════════════════════════════════════════╗");
+            System.out.println("║   🚀 Servidor iniciado en http://localhost:8080/api  ║");
+            System.out.println("╚════════════════════════════════════════════════════════╝");
+            System.out.println();
+            System.out.println("📚 Endpoints disponibles:");
+            System.out.println("   - POST   /api/auth/register");
+            System.out.println("   - POST   /api/auth/login");
+            System.out.println("   - GET    /api/auth/me");
+            System.out.println("   - POST   /api/auth/logout");
+            System.out.println();
+            System.out.println("   - GET    /api/usuarios");
+            System.out.println("   - POST   /api/usuarios");
+            System.out.println("   - GET    /api/usuarios/{id}");
+            System.out.println();
+            System.out.println("   - GET    /api/proyectos");
+            System.out.println("   - POST   /api/proyectos");
+            System.out.println("   - GET    /api/proyectos/{id}");
+            System.out.println("   - PUT    /api/proyectos/{id}");
+            System.out.println("   - DELETE /api/proyectos/{id}");
+            System.out.println();
+            System.out.println("   - GET    /api/tareas/{id}");
+            System.out.println("   - GET    /api/tareas/proyecto/{proyectoId}");
+            System.out.println("   - POST   /api/tareas");
+            System.out.println("   - PUT    /api/tareas/{id}");
+            System.out.println("   - DELETE /api/tareas/{id}");
+            System.out.println("   - POST   /api/tareas/{id}/asignar");
+            System.out.println("   - POST   /api/tareas/{id}/favorito");
+            System.out.println();
+            System.out.println("   - GET    /api/notificaciones/usuario/{usuarioId}");
+            System.out.println("   - GET    /api/notificaciones/usuario/{usuarioId}/no-leidas");
+            System.out.println("   - POST   /api/notificaciones");
+            System.out.println("   - PUT    /api/notificaciones/{id}/leer");
+            System.out.println("   - DELETE /api/notificaciones/{id}");
+            System.out.println();
+            System.out.println("   - GET    /api/archivos/proyecto/{proyectoId}");
+            System.out.println("   - POST   /api/archivos");
+            System.out.println("   - DELETE /api/archivos/{id}");
+            System.out.println();
+            System.out.println("Presiona Ctrl+C para detener el servidor");
+            
             server.join();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Error al iniciar el servidor: " + e.getMessage());
+            System.out.println("❌ Error al iniciar el servidor: " + e.getMessage());
         } finally {
             server.destroy();
         }

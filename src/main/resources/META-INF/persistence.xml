@@ -3,7 +3,6 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
 
-    <!-- ESTE ES EL NOMBRE QUE USA EL DAO -->
     <persistence-unit name="proyecto-pu" transaction-type="RESOURCE_LOCAL">
         
         <!-- Lista todas tus clases de entidad aquí -->
@@ -11,20 +10,66 @@
         <class>entity.Proyecto</class>
         <class>entity.Tarea</class>
         <class>entity.Notificacion</class>
-        <!-- No necesitas listar tablas intermedias como Tarea_Asignada -->
+        <class>entity.Archivo</class>
 
         <properties>
-            <!-- Configuración de la conexión a PostgreSQL -->
+            <!-- Configuración de la conexión a PostgreSQL en Docker -->
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/tu_base_de_datos"/>
-            <property name="jakarta.persistence.jdbc.user" value="tu_usuario"/>
-            <property name="jakarta.persistence.jdbc.password" value="tu_contraseña"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://db:5432/mydb"/>
+            <property name="jakarta.persistence.jdbc.user" value="myuser"/>
+            <property name="jakarta.persistence.jdbc.password" value="mypass"/>
 
             <!-- Configuración de Hibernate -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/> <!-- 'update' actualiza el esquema, 'create' lo borra y crea -->
-            <property name="hibernate.show_sql" value="true"/> <!-- Muestra las queries SQL en la consola -->
+            
+            <!-- IMPORTANTE: 'update' actualiza el esquema automáticamente -->
+            <!-- 'create' borra todo y crea de nuevo -->
+            <!-- 'validate' solo valida -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            
+            <!-- Mostrar SQL en consola (útil para debug) -->
+            <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
+            
+            <!-- Configuración adicional -->
+            <property name="hibernate.use_sql_comments" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence><persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+
+    <persistence-unit name="proyecto-pu" transaction-type="RESOURCE_LOCAL">
+        
+        <!-- Lista todas tus clases de entidad aquí -->
+        <class>entity.Usuario</class>
+        <class>entity.Proyecto</class>
+        <class>entity.Tarea</class>
+        <class>entity.Notificacion</class>
+        <class>entity.Archivo</class>
+
+        <properties>
+            <!-- Configuración de la conexión a PostgreSQL en Docker -->
+            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://db:5432/mydb"/>
+            <property name="jakarta.persistence.jdbc.user" value="myuser"/>
+            <property name="jakarta.persistence.jdbc.password" value="mypass"/>
+
+            <!-- Configuración de Hibernate -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            
+            <!-- IMPORTANTE: 'update' actualiza el esquema automáticamente -->
+            <!-- 'create' borra todo y crea de nuevo -->
+            <!-- 'validate' solo valida -->
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            
+            <!-- Mostrar SQL en consola (útil para debug) -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            
+            <!-- Configuración adicional -->
+            <property name="hibernate.use_sql_comments" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>
