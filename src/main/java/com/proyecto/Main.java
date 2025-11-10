@@ -12,16 +12,15 @@ public class Main {
         context.setContextPath("/");
         server.setHandler(context);
 
-        // Configurar el Servlet de Jersey
         ServletHolder holder = context.addServlet(ServletContainer.class, "/api/*");
         holder.setInitOrder(1);
 
-        // Escanear el paquete 'controller' para encontrar todos los endpoints
+        // Escanear el paquete 'controller'
         holder.setInitParameter("jersey.config.server.provider.packages", "controller");
         
-        // Usar GSON para manejar JSON
+        // CAMBIO IMPORTANTE: Usar Jackson en lugar de GSON
         holder.setInitParameter("jersey.config.server.provider.classnames", 
-            "org.glassfish.jersey.media.json.gson.GsonFeature");
+            "org.glassfish.jersey.jackson.JacksonFeature");
 
         try {
             server.start();
@@ -32,38 +31,6 @@ public class Main {
             System.out.println("📚 Endpoints disponibles:");
             System.out.println("   - POST   /api/auth/register");
             System.out.println("   - POST   /api/auth/login");
-            System.out.println("   - GET    /api/auth/me");
-            System.out.println("   - POST   /api/auth/logout");
-            System.out.println();
-            System.out.println("   - GET    /api/usuarios");
-            System.out.println("   - POST   /api/usuarios");
-            System.out.println("   - GET    /api/usuarios/{id}");
-            System.out.println();
-            System.out.println("   - GET    /api/proyectos");
-            System.out.println("   - POST   /api/proyectos");
-            System.out.println("   - GET    /api/proyectos/{id}");
-            System.out.println("   - PUT    /api/proyectos/{id}");
-            System.out.println("   - DELETE /api/proyectos/{id}");
-            System.out.println();
-            System.out.println("   - GET    /api/tareas/{id}");
-            System.out.println("   - GET    /api/tareas/proyecto/{proyectoId}");
-            System.out.println("   - POST   /api/tareas");
-            System.out.println("   - PUT    /api/tareas/{id}");
-            System.out.println("   - DELETE /api/tareas/{id}");
-            System.out.println("   - POST   /api/tareas/{id}/asignar");
-            System.out.println("   - POST   /api/tareas/{id}/favorito");
-            System.out.println();
-            System.out.println("   - GET    /api/notificaciones/usuario/{usuarioId}");
-            System.out.println("   - GET    /api/notificaciones/usuario/{usuarioId}/no-leidas");
-            System.out.println("   - POST   /api/notificaciones");
-            System.out.println("   - PUT    /api/notificaciones/{id}/leer");
-            System.out.println("   - DELETE /api/notificaciones/{id}");
-            System.out.println();
-            System.out.println("   - GET    /api/archivos/proyecto/{proyectoId}");
-            System.out.println("   - POST   /api/archivos");
-            System.out.println("   - DELETE /api/archivos/{id}");
-            System.out.println();
-            System.out.println("Presiona Ctrl+C para detener el servidor");
             
             server.join();
         } catch (Exception e) {
