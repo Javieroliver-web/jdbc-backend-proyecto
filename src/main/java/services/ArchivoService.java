@@ -23,12 +23,14 @@ public class ArchivoService {
     }
 
     public List<ArchivoDTO> getArchivosPorProyecto(int proyectoId) {
+        // Esta función ahora no dará error gracias al JOIN FETCH en el DAO
         return archivoDAO.getArchivosPorProyecto(proyectoId).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
     public List<ArchivoDTO> getArchivosSubidosPorUsuario(int usuarioId) {
+        // Esta función ahora no dará error gracias al JOIN FETCH en el DAO
         return archivoDAO.getArchivosSubidosPorUsuario(usuarioId).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
@@ -41,26 +43,33 @@ public class ArchivoService {
         archivo.setUrl(createDTO.getUrl());
         archivo.setTamano(createDTO.getTamano());
 
-        // Asignar proyecto
         Proyecto proyecto = proyectoDAO.getProyectoPorId(createDTO.getProyecto_id());
         if (proyecto == null) {
-            return null; // Error: proyecto no existe
+            return null; 
         }
         archivo.setProyecto(proyecto);
 
-        // Asignar usuario
         Usuario usuario = usuarioDAO.getUsuarioPorId(createDTO.getUsuario_id());
         if (usuario == null) {
-            return null; // Error: usuario no existe
+            return null; 
         }
         archivo.setUsuario(usuario);
 
-        archivoDAO.crearArchivo(archivo);
-        return toDTO(archivo);
+        // --- ¡CORRECCIÓN AQUÍ! ---
+        // El DAO ahora devuelve la entidad creada (o null)
+        Archivo archivoGuardado = archivoDAO.crearArchivo(archivo); 
+        
+        if (archivoGuardado == null) {
+            return null; // La creación falló en el DAO
+        }
+        
+        return toDTO(archivoGuardado); // Devolvemos el DTO
     }
 
-    public void eliminarArchivo(int id) {
-        archivoDAO.eliminarArchivo(id);
+    // --- ¡CORRECCIÓN AQUÍ! ---
+    public boolean eliminarArchivo(int id) {
+        // El DAO ahora devuelve boolean, así que lo devolvemos también
+        return archivoDAO.eliminarArchivo(id);
     }
 
     // Mapeador
@@ -73,10 +82,11 @@ public class ArchivoService {
         dto.setTamano(archivo.getTamano());
         dto.setFecha_subida(archivo.getFecha_subida());
         
+        // Estas líneas AHORA SÍ FUNCIONARÁN porque el DAO
+        // ya cargó los objetos gracias a JOIN FETCH
         if (archivo.getProyecto() != null) {
             dto.setProyecto_id(archivo.getProyecto().getId());
         }
-        
         if (archivo.getUsuario() != null) {
             dto.setUsuario_id(archivo.getUsuario().getId());
             dto.setNombreUsuario(archivo.getUsuario().getNombre() + " " + archivo.getUsuario().getApellido());

@@ -1,11 +1,13 @@
 dto\ProyectoCreateDTO.class
 dto\TareaDTO.class
+controller\ArchivoController.class
 controller\ProyectoController.class
 dto\ProyectoDTO.class
 entity\Tarea.class
 dto\TareaCreateDTO.class
 dto\ArchivoCreateDTO.class
 dto\NotificacionDTO.class
+services\NotificacionService.class
 dto\AuthResponseDTO.class
 controller\TareaController.class
 entity\Usuario.class
@@ -22,6 +24,7 @@ entity\Proyecto.class
 dao\ProyectoDAO.class
 dto\UsuarioDTO.class
 dto\UsuarioCreateDTO.class
+controller\NotificacionController.class
 entity\Archivo.class
 dto\ArchivoDTO.class
 util\PasswordUtil.class

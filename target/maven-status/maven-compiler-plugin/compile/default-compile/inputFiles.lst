@@ -1,5 +1,7 @@
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\com\proyecto\Main.java
+D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\controller\ArchivoController.java
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\controller\AuthController.java
+D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\controller\NotificacionController.java
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\controller\ProyectoController.java
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\controller\TareaController.java
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\controller\UsuarioController.java
@@ -28,6 +30,7 @@ D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\entity\Tarea.java
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\entity\Usuario.java
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\services\ArchivoService.java
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\services\AuthService.java
+D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\services\NotificacionService.java
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\services\ProyectoService.java
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\services\TareaService.java
 D:\Altair\DWS\jdbc-backend-proyecto\src\main\java\services\UsuarioService.java
