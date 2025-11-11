@@ -5,7 +5,6 @@
 
     <persistence-unit name="proyecto-pu" transaction-type="RESOURCE_LOCAL">
         
-        <!-- Lista todas tus clases de entidad aquí -->
         <class>entity.Usuario</class>
         <class>entity.Proyecto</class>
         <class>entity.Tarea</class>
@@ -13,23 +12,15 @@
         <class>entity.Archivo</class>
 
         <properties>
-            <!-- Configuración de la conexión a PostgreSQL en Docker -->
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://db:5432/mydb"/>
             <property name="jakarta.persistence.jdbc.user" value="myuser"/>
             <property name="jakarta.persistence.jdbc.password" value="mypass"/>
 
-            <!-- Configuración de Hibernate -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            
-            <!-- IMPORTANTE: 'update' actualiza el esquema automáticamente -->
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-            
-            <!-- Mostrar SQL en consola (útil para debug) -->
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
-            
-            <!-- Configuración adicional -->
             <property name="hibernate.use_sql_comments" value="true"/>
         </properties>
     </persistence-unit>
