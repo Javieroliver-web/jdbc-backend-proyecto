@@ -40,6 +40,7 @@ public class Tarea {
     /**
      * Relación Muchos-a-Muchos con Usuario (para asignados).
      * 'mappedBy = "tareasAsignadas"' indica que la clase 'Usuario' maneja esta relación.
+     * Este es el lado "espejo" (inverse side).
      */
     @ManyToMany(mappedBy = "tareasAsignadas")
     private Set<Usuario> usuariosAsignados = new HashSet<>();
@@ -47,6 +48,7 @@ public class Tarea {
     /**
      * Relación Muchos-a-Muchos con Usuario (para favoritos).
      * 'mappedBy = "tareasFavoritas"' indica que la clase 'Usuario' maneja esta relación.
+     * Este es el lado "espejo" (inverse side).
      */
     @ManyToMany(mappedBy = "tareasFavoritas")
     private Set<Usuario> usuariosFavoritos = new HashSet<>();
@@ -57,7 +59,6 @@ public class Tarea {
     }
 
     // --- Getters y Setters ---
-    // ¡ESTO ES LO QUE SOLUCIONA TODOS TUS ERRORES!
 
     public int getId() {
         return id;
@@ -121,5 +122,46 @@ public class Tarea {
 
     public void setUsuariosFavoritos(Set<Usuario> usuariosFavoritos) {
         this.usuariosFavoritos = usuariosFavoritos;
+    }
+
+    // -----------------------------------------------------------------
+    // --- MÉTODOS HELPER PARA SINCRONIZAR RELACIONES BIDIRECCIONALES ---
+    // --- ¡ESTA ES LA SOLUCIÓN! ---
+    // -----------------------------------------------------------------
+
+    /**
+     * Añade un usuario a la lista de asignados,
+     * sincronizando AMBOS lados de la relación.
+     */
+    public void addUsuarioAsignado(Usuario usuario) {
+        this.usuariosAsignados.add(usuario);
+        usuario.getTareasAsignadas().add(this); // Sincroniza el lado dueño
+    }
+
+    /**
+     * Remueve un usuario de la lista de asignados,
+     * sincronizando AMBOS lados de la relación.
+     */
+    public void removeUsuarioAsignado(Usuario usuario) {
+        this.usuariosAsignados.remove(usuario);
+        usuario.getTareasAsignadas().remove(this); // Sincroniza el lado dueño
+    }
+
+    /**
+     * Añade un usuario a la lista de favoritos,
+     * sincronizando AMBOS lados de la relación.
+     */
+    public void addUsuarioFavorito(Usuario usuario) {
+        this.usuariosFavoritos.add(usuario);
+        usuario.getTareasFavoritas().add(this); // Sincroniza el lado dueño
+    }
+
+    /**
+     * Remueve un usuario de la lista de favoritos,
+     * sincronizando AMBOS lados de la relación.
+     */
+    public void removeUsuarioFavorito(Usuario usuario) {
+        this.usuariosFavoritos.remove(usuario);
+        usuario.getTareasFavoritas().remove(this); // Sincroniza el lado dueño
     }
 }
